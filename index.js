@@ -7,13 +7,13 @@ let calculatorButtons = [
     }, {
         name: "ln",
         symbol: "ln",
-        formula: "",
-        type: "operator"
+        formula: "Math.log10(",
+        type: "log"
     }, {
         name: "fact",
         symbol: "𝑥!",
         formula: "",
-        type: "fact"
+        type: "operator"
     }, {
         name: "delet",
         symbol: "DEL",
@@ -43,7 +43,7 @@ let calculatorButtons = [
         name: "square",
         symbol: "𝑥²",
         formula: "**2",
-        type: "power"
+        type: "operator"
     }, {
         name: "sqrt",
         symbol: "√𝑥",
@@ -148,24 +148,35 @@ let data = {
     formula: [],
 }
 function calculator(button) {
-    // outputResult.innerHTML = "ㅤ";
-    if (button.type == "power") {
-        data.operation.push("²");
-        data.formula.push(button.formula);
-        outputOperationElement.innerHTML = data.operation.join("");
-    }
-    else if (button.type == "number") {
+    if (button.type == "number") {
         data.operation.push(button.symbol);
         data.formula.push(button.formula);
-        outputOperationElement.innerHTML = data.operation.join("");
-    }
-    else if (button.type == "operator") {
-        data.operation.push(button.symbol);
+            outputOperationElement.innerHTML = data.operation.join("");
+        }
+        else if (button.type == "operator") {
+                data.formula.forEach((vall,indexx)=>{
+                    if(vall === "Math.sqrt(" || vall === "Math.log10("){
+                        console.log(val)
+                        data.operation.push(")");
+                        data.formula.push(")");
+                    }
+                })
+            // }
+            if (button.name == "square") {
+                data.operation.push("²");
+                button.symbol = "";
+            }
+            data.operation.push(button.symbol);
+            data.formula.push(button.formula);
+            outputOperationElement.innerHTML = data.operation.join("");
+        }
+    else if(button.type == "log"){
+        data.operation.push(button.symbol+"(");
         data.formula.push(button.formula);
         outputOperationElement.innerHTML = data.operation.join("");
     }
     else if (button.type === "root" && button.name == "sqrt") {
-        data.operation.push("√");
+        data.operation.push("(√");
         data.formula.push(button.formula);
         outputOperationElement.innerHTML = data.operation.join("");
     }
@@ -181,10 +192,17 @@ function calculator(button) {
     }
     else if (button.type == "calculate") {
         outputResult.innerHTML = "";
+        data.formula.forEach((vall)=>{
+            if((vall === "Math.sqrt(" && vall !== ")") || (vall === "Math.log10(" && vall !== ")")){
+                data.operation.push(")");
+                data.formula.push(")");
+            }
+        })
         let formula = data.formula.join('');
         if (formula) {
             console.log(formula)
-            let result = eval(formula);
+            let resultfloat = eval(formula);
+            let result = parseFloat(resultfloat).toFixed(2);
             data.operation = [result];
             data.formula = [result];
         }// console.log(((data.operation.slice()).map(String))[0].length);
@@ -228,34 +246,3 @@ window,setInterval(function auto(){
         i++;
     }
 },50);
-// var box = $(".output"), x;
-// $(".operation").click(function() {
-//     outputResult = "dsd";
-//     if ($(this).hasClass("arrow-right")) {
-//         x = ((box.width() / 2)) + box.scrollLeft();
-//         box.animate({
-//         scrollLeft: x,
-//         })
-//     } else {
-//         x = ((box.width() / 2)) - box.scrollLeft();
-//         box.animate({
-//         scrollLeft: -x,
-//         });
-//     }
-// });
-// if (button.type === "toggle") {
-//     var but = document.getElementById("shift");
-//     if (button.symbol == "⇧") {
-//         but.innerHTML = "⇪";
-//         button.symbol = "⇪";
-//         toggle();
-//     }
-//     else {
-//         but.innerHTML = "⇧";
-//         button.symbol = "⇧";
-//         console.log("icon changed to ⇧");
-//     }
-// }
-// function toggle() {
-//     console.log("icon changed to ⇪");
-// }
